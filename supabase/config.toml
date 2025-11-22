@@ -2,3 +2,6 @@ project_id = "aictkzpcfcpzbjdlbkou"
 
 [functions.og-preview]
 verify_jwt = false
+
+[functions.now_live]
+verify_jwt = false

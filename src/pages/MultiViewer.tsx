@@ -44,7 +44,7 @@ const MultiViewer = () => {
         return;
       }
 
-      const response = await fetch("https://api.crstlnz.my.id/api/now_live?group=jkt48");
+      const response = await fetch("https://aictkzpcfcpzbjdlbkou.functions.supabase.co/now_live?group=jkt48");
       const apiData: APIStream[] = await response.json();
       
       // Transform and filter selected streams

@@ -18,7 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
-import { LiveComments } from "@/components/LiveComments";
+
 
 const Player = () => {
   const [searchParams] = useSearchParams();
@@ -107,13 +107,13 @@ const Player = () => {
   };
 
   const getShareUrl = () => {
-    return `${window.location.origin}/og-preview?=${streamCode}`;
+    return `/stream?=${streamCode}`;
   };
-
+ 
   const getEmbedCode = () => {
-    return `<iframe src="${window.location.href}" width="560" height="315" frameborder="0" allowfullscreen></iframe>`;
+    const shareUrl = getShareUrl();
+    return `<iframe src="${shareUrl}" width="560" height="315" frameborder="0" allowfullscreen></iframe>`;
   };
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({

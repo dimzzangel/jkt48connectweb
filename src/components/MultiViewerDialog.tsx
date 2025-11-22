@@ -28,7 +28,7 @@ export const MultiViewerDialog = ({ open, onOpenChange }: MultiViewerDialogProps
   const fetchLiveStreams = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://api.crstlnz.my.id/api/now_live?group=jkt48");
+      const response = await fetch("https://aictkzpcfcpzbjdlbkou.functions.supabase.co/now_live?group=jkt48");
       const data: APIStream[] = await response.json();
       
       // Transform streams for multi-viewer
