@@ -1,0 +1,4 @@
+project_id = "aictkzpcfcpzbjdlbkou"
+
+[functions.og-preview]
+verify_jwt = false
