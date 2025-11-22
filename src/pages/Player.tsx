@@ -107,7 +107,7 @@ const Player = () => {
   };
 
   const getShareUrl = () => {
-    return `/stream?=${streamCode}`;
+    return `${window.location.origin}/stream?=${streamCode}`;
   };
  
   const getEmbedCode = () => {
