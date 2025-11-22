@@ -287,12 +287,6 @@ const Player = () => {
             </CardContent>
           </Card>
 
-          {/* Live Comments */}
-          {streamCode && (
-            <div className="mt-6">
-              <LiveComments streamCode={streamCode} />
-            </div>
-          )}
         </div>
       )}
     </div>
