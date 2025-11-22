@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { SplashScreen } from "@/components/SplashScreen";
+import { InactivityNotification } from "@/components/InactivityNotification";
 import Index from "./pages/Index";
 import Player from "./pages/Player";
 import MultiViewer from "./pages/MultiViewer";
@@ -24,6 +25,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <InactivityNotification />
           {showSplash ? (
             <SplashScreen onFinish={() => setShowSplash(false)} />
           ) : (
