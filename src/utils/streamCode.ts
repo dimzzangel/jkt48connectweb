@@ -2,12 +2,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface StreamData {
   type?: string;
-  streams?: Array<{ room_id?: number; url?: string }>;
+  streams?: Array<{ room_id?: number; url?: string; streaming_url?: string }>;
   room_id?: number;
   url?: string;
+  streaming_url?: string;
   [key: string]: any;
 }
-
 export const generateStreamCode = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
@@ -18,10 +18,13 @@ export const generateStreamCode = (): string => {
 };
 
 export const getExistingStreamCode = async (streamData: StreamData): Promise<string | null> => {
-  // Create a unique identifier based on stream data
+  const getSingleStreamIdentifier = (data: StreamData) => {
+    return String(data.room_id || data.streaming_url || data.url);
+  };
+
   const streamIdentifier = streamData.type === 'multi' 
-    ? JSON.stringify((streamData.streams || []).map((s: any) => s.room_id || s.url).sort())
-    : String(streamData.room_id || streamData.url);
+    ? JSON.stringify((streamData.streams || []).map((s: any) => s.room_id || s.url || s.streaming_url).sort())
+    : getSingleStreamIdentifier(streamData);
 
   const { data: existing } = await supabase
     .from('stream_codes')
@@ -33,8 +36,8 @@ export const getExistingStreamCode = async (streamData: StreamData): Promise<str
     for (const record of existing) {
       const recordData = record.stream_data as StreamData;
       const existingIdentifier = recordData.type === 'multi'
-        ? JSON.stringify((recordData.streams || []).map((s: any) => s.room_id || s.url).sort())
-        : String(recordData.room_id || recordData.url);
+        ? JSON.stringify((recordData.streams || []).map((s: any) => s.room_id || s.url || s.streaming_url).sort())
+        : getSingleStreamIdentifier(recordData);
       
       if (existingIdentifier === streamIdentifier) {
         return record.code;
@@ -44,7 +47,6 @@ export const getExistingStreamCode = async (streamData: StreamData): Promise<str
 
   return null;
 };
-
 export const saveStreamCode = async (streamData: StreamData): Promise<string> => {
   // Check if stream already has a code
   const existingCode = await getExistingStreamCode(streamData);
