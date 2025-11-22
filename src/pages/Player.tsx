@@ -286,7 +286,6 @@ const Player = () => {
               </div>
             </CardContent>
           </Card>
-
         </div>
       )}
     </div>
