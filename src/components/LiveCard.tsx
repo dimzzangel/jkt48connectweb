@@ -41,12 +41,15 @@ const LiveCard = ({ member }: LiveCardProps) => {
   const handleClick = async () => {
     try {
       const streamData = {
-        platform: member.type,
-        url: member.streaming_url || member.url,
+        type: member.type,
+        url: member.url,
+        streaming_url: member.streaming_url,
         name: member.name,
         title: member.title,
         image: member.image,
         room_id: member.room_id,
+        description: member.title,
+        slug: member.title,
       };
       
       const code = await saveStreamCode(streamData);

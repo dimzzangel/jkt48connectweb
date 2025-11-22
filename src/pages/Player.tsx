@@ -18,6 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { LiveComments } from "@/components/LiveComments";
 
 const Player = () => {
   const [searchParams] = useSearchParams();
@@ -54,12 +55,19 @@ const Player = () => {
       document.title = `${data.name} - Live | JKT48 Connect`;
 
       if (data.type === "youtube") {
-        setEmbedUrl(`https://www.youtube.com/embed/${data.url.split("v=")[1]}`);
-        setDescription(data.title || "");
+        // Extract video ID from URL
+        const videoId = data.url.includes("v=") 
+          ? data.url.split("v=")[1].split("&")[0]
+          : data.url.split("/").pop();
+        setEmbedUrl(`https://www.youtube.com/embed/${videoId}`);
+        setDescription(data.description || data.title || "");
       } else if (data.type === "idn") {
+        // Use streaming_url from data for IDN
         setEmbedUrl(data.streaming_url || "");
+        // Remove numbers from slug for description
         const slug = data.slug || "";
-        setDescription(slug.replace(/^\d+\s*-\s*/, ""));
+        const cleanDescription = slug.replace(/^\d+\s*-\s*/, "").replace(/-/g, " ");
+        setDescription(cleanDescription);
       } else if (data.type === "showroom") {
         setEmbedUrl(data.url);
         setDescription(data.title || "");
@@ -223,12 +231,20 @@ const Player = () => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
-                ) : (
+                ) : streamData.type === "idn" ? (
                   <video
                     src={embedUrl}
                     className="w-full h-full"
                     controls
                     autoPlay
+                    playsInline
+                  />
+                ) : (
+                  <iframe
+                    src={embedUrl}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
                   />
                 )}
               </AspectRatio>
@@ -240,10 +256,12 @@ const Player = () => {
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-primary/20 animate-scale-in">
-                    <span className="text-2xl font-bold text-primary">
-                      {streamData.name.charAt(0)}
-                    </span>
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/20 animate-scale-in">
+                    <img 
+                      src={streamData.image} 
+                      alt={streamData.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
                 <div className="flex-1 space-y-3">
@@ -268,6 +286,13 @@ const Player = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Live Comments */}
+          {streamCode && (
+            <div className="mt-6">
+              <LiveComments streamCode={streamCode} />
+            </div>
+          )}
         </div>
       )}
     </div>
