@@ -18,7 +18,7 @@ const MultiViewer = () => {
   }, []);
 
   const loadStreams = async () => {
-    const code = searchParams.toString().replace('=', '');
+    const code = searchParams.get('code') || searchParams.toString().replace('=', '');
     
     if (!code) {
       setNotFound(true);
@@ -30,6 +30,7 @@ const MultiViewer = () => {
       const data = await getStreamData(code);
       
       if (!data || data.type !== 'multi') {
+        console.log('Invalid multi viewer data:', data);
         setNotFound(true);
         setLoading(false);
         return;
@@ -39,6 +40,7 @@ const MultiViewer = () => {
       const platforms = data.platforms.split(",");
       
       if (streamKeys.length < 2) {
+        console.log('Not enough streams:', streamKeys.length);
         setNotFound(true);
         setLoading(false);
         return;
