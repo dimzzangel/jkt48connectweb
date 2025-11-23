@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, Loader2, RefreshCw, TrendingUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+interface RecentStream { 
 interface RecentStream {
+  data_id?: number;
   room_id?: number;
   title?: string;
   url?: string;
@@ -29,7 +31,6 @@ interface RecentStream {
   };
   points?: number;
   type: string;
-  // Fallback fields
   name?: string;
   img?: string;
   started_at?: string;
@@ -47,24 +48,24 @@ const Recent = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
   const fetchRecent = async () => {
-    try {
-      const response = await fetch("https://api.crstlnz.my.id/api/recent?group=jkt48");
-      if (!response.ok) throw new Error("Failed to fetch recent streams");
-      
-      const data: RecentResponse = await response.json();
-      setStreams(data.recent || []);
-      setLastUpdate(new Date());
-    } catch (error) {
-      console.error("Error fetching recent streams:", error);
-      toast({
-        title: "Error",
-        description: "Gagal memuat riwayat stream. Akan mencoba lagi...",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await fetch("https:                                             
+    if (!response.ok) throw new Error("Failed to fetch recent streams");
+    const data: RecentResponse = await response.json();
+    console.log("Data fetched:", data);                    
+    setStreams(data.recent || []);
+    setLastUpdate(new Date());
+  } catch (error) {
+    console.error("Error fetching recent streams:", error);
+    toast({
+      title: "Error",
+      description: "Gagal memuat riwayat stream. Akan mencoba lagi...",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchRecent();
