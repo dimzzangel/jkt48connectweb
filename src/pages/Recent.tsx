@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, Loader2, RefreshCw, TrendingUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
-interface RecentStream { 
 interface RecentStream {
   data_id?: number;
   room_id?: number;
