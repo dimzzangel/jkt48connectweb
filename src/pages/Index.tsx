@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { StreamMember, APIStream } from "@/types/stream";
 import LiveCard from "@/components/LiveCard";
-import { Loader2, Radio, Menu, Play } from "lucide-react";
+import { Loader2, Radio, Menu, Play, Newspaper, History, Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { MultiViewerDialog } from "@/components/MultiViewerDialog";
@@ -215,6 +216,28 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Quick Links */}
+        <div className="mb-6 flex gap-3 flex-wrap animate-fade-in">
+          <Link to="/news">
+            <Button variant="outline" size="sm" className="hover-scale">
+              <Newspaper className="h-4 w-4 mr-2" />
+              Berita
+            </Button>
+          </Link>
+          <Link to="/recent">
+            <Button variant="outline" size="sm" className="hover-scale">
+              <History className="h-4 w-4 mr-2" />
+              Riwayat Live
+            </Button>
+          </Link>
+          <Link to="/theater">
+            <Button variant="outline" size="sm" className="hover-scale">
+              <Calendar className="h-4 w-4 mr-2" />
+              Jadwal Theater
+            </Button>
+          </Link>
+        </div>
+
         {/* Stats Bar */}
         <div className="mb-8 flex items-center justify-between bg-card border border-border rounded-lg p-4 animate-fade-in">
           <div className="flex items-center gap-6">

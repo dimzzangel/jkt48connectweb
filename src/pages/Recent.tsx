@@ -8,15 +8,32 @@ import { toast } from "@/hooks/use-toast";
 
 interface RecentStream {
   room_id?: number;
-  name: string;
-  url: string;
+  title?: string;
+  url?: string;
   image?: string;
-  img?: string;
-  started_at: string;
-  ended_at?: string;
+  member?: {
+    name: string;
+    nickname?: string;
+    img_alt?: string;
+    img?: string;
+  };
+  live_info?: {
+    date?: {
+      start: string;
+      end: string;
+    };
+    duration?: number;
+    viewers?: {
+      num: number;
+    };
+  };
+  points?: number;
   type: string;
-  duration?: number;
-  viewers?: number;
+  // Fallback fields
+  name?: string;
+  img?: string;
+  started_at?: string;
+  ended_at?: string;
   channelTitle?: string;
 }
 
@@ -60,8 +77,9 @@ const Recent = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const formatDuration = (seconds?: number) => {
-    if (!seconds) return "N/A";
+  const formatDuration = (milliseconds?: number) => {
+    if (!milliseconds) return "N/A";
+    const seconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours}j ${minutes}m`;
@@ -141,54 +159,87 @@ const Recent = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {streams.map((stream, index) => (
-              <Card key={`${stream.room_id || index}-${stream.started_at}`} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="relative aspect-video overflow-hidden bg-muted">
-                  {(stream.image || stream.img) && (
-                    <img
-                      src={stream.image || stream.img}
-                      alt={stream.name || stream.channelTitle || "Stream"}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  )}
-                  <div className="absolute top-2 right-2">
-                    <Badge className={getPlatformColor(stream.type)}>
-                      {stream.type.toUpperCase()}
-                    </Badge>
-                  </div>
-                </div>
-                <CardHeader className="pb-3">
-                  <h3 className="font-semibold text-foreground line-clamp-1">
-                    {stream.name || stream.channelTitle || "Unknown"}
-                  </h3>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span>{formatDate(stream.started_at)}</span>
-                  </div>
-                  {stream.duration !== undefined && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <TrendingUp className="h-4 w-4" />
-                      <span>Durasi: {formatDuration(stream.duration)}</span>
+            {streams.map((stream, index) => {
+              const memberName = stream.member?.name || stream.name || stream.channelTitle || "Unknown";
+              const thumbnail = stream.member?.img_alt || stream.image || stream.member?.img || stream.img;
+              const startDate = stream.live_info?.date?.start || stream.started_at || "";
+              const endDate = stream.live_info?.date?.end || stream.ended_at;
+              const duration = stream.live_info?.duration;
+              const viewerCount = stream.live_info?.viewers?.num;
+              const giftPoints = stream.points;
+              
+              return (
+                <Card key={`${stream.room_id || index}-${startDate}`} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative aspect-video overflow-hidden bg-muted">
+                    {thumbnail && (
+                      <img
+                        src={thumbnail}
+                        alt={memberName}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    )}
+                    <div className="absolute top-2 right-2">
+                      <Badge className={getPlatformColor(stream.type)}>
+                        {stream.type.toUpperCase()}
+                      </Badge>
                     </div>
-                  )}
-                  <a
-                    href={stream.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block w-full"
-                  >
-                    <Button variant="outline" size="sm" className="w-full mt-2">
-                      Lihat Stream
-                    </Button>
-                  </a>
-                </CardContent>
-              </Card>
-            ))}
+                  </div>
+                  <CardHeader className="pb-3">
+                    <h3 className="font-semibold text-foreground line-clamp-1">
+                      {memberName}
+                    </h3>
+                    {stream.title && (
+                      <p className="text-sm text-muted-foreground line-clamp-1">{stream.title}</p>
+                    )}
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span>Mulai: {formatDate(startDate)}</span>
+                    </div>
+                    {endDate && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="h-4 w-4" />
+                        <span>Selesai: {formatDate(endDate)}</span>
+                      </div>
+                    )}
+                    {duration !== undefined && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <TrendingUp className="h-4 w-4" />
+                        <span>Durasi: {formatDuration(duration)}</span>
+                      </div>
+                    )}
+                    {viewerCount !== undefined && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <TrendingUp className="h-4 w-4" />
+                        <span>Penonton: {viewerCount.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {giftPoints !== undefined && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <TrendingUp className="h-4 w-4" />
+                        <span>Gift: {giftPoints.toLocaleString()} poin</span>
+                      </div>
+                    )}
+                    {stream.url && (
+                      <a
+                        href={stream.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block w-full"
+                      >
+                        <Button variant="outline" size="sm" className="w-full mt-2">
+                          Lihat Stream
+                        </Button>
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </main>

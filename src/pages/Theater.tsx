@@ -10,13 +10,15 @@ interface TheaterShow {
   id: string;
   title: string;
   date: string;
-  time?: string;
+  poster?: string;
+  banner?: string;
+  member_count?: number;
   url?: string;
   setlist?: {
     name: string;
     image?: string;
   };
-  member_list?: string[];
+  lineup?: string[];
   seitansai?: string[];
   graduation?: string[];
 }
@@ -125,11 +127,11 @@ const Theater = () => {
             {shows.map((show) => (
               <Card key={show.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="md:flex">
-                  {show.setlist?.image && (
+                  {(show.poster || show.banner || show.setlist?.image) && (
                     <div className="md:w-48 aspect-video md:aspect-square overflow-hidden bg-muted">
                       <img
-                        src={show.setlist.image}
-                        alt={show.setlist.name || show.title}
+                        src={show.poster || show.banner || show.setlist?.image}
+                        alt={show.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
@@ -154,10 +156,10 @@ const Theater = () => {
                           <Calendar className="h-4 w-4" />
                           <span>{formatDate(show.date)}</span>
                         </div>
-                        {show.time && (
+                        {show.member_count !== undefined && show.member_count > 0 && (
                           <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4" />
-                            <span>{show.time}</span>
+                            <Users className="h-4 w-4" />
+                            <span>{show.member_count} members</span>
                           </div>
                         )}
                       </div>
@@ -183,20 +185,20 @@ const Theater = () => {
                           </p>
                         </div>
                       )}
-                      {show.member_list && show.member_list.length > 0 && (
+                      {show.lineup && show.lineup.length > 0 && (
                         <div>
                           <div className="flex items-center gap-2 mb-2 text-sm font-medium">
                             <Users className="h-4 w-4" />
-                            <span>Lineup ({show.member_list.length} members)</span>
+                            <span>Lineup ({show.lineup.length} members)</span>
                           </div>
                           <p className="text-sm text-muted-foreground line-clamp-2">
-                            {show.member_list.join(", ")}
+                            {show.lineup.join(", ")}
                           </p>
                         </div>
                       )}
                       {show.url && (
                         <a
-                          href={show.url}
+                          href={`https://jkt48.com/theater/schedule/id/${show.url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-block"
