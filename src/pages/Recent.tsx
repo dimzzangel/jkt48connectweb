@@ -7,34 +7,34 @@ import { ArrowLeft, Clock, Loader2, RefreshCw, TrendingUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface RecentStream {
-  room_id?: number;
-  title?: string;
-  url?: string;
+  room_id: number;
+  title: string;
+  url: string;
   image?: string;
-  member?: {
+  member: {
     name: string;
-    nickname?: string;
-    img_alt?: string;
+    nickname: string;
+    img_alt: string;
     img?: string;
   };
   live_info?: {
-    date?: {
+    date: {
       start: string;
       end: string;
     };
     duration?: number;
-    viewers?: {
+    viewers: {
       num: number;
     };
   };
-  points?: number;
+  points: number;
   type: string;
   // Fallback fields
-  name?: string;
+  name: string;
   img?: string;
-  started_at?: string;
-  ended_at?: string;
-  channelTitle?: string;
+  started_at: string;
+  ended_at: string;
+  channelTitle: string;
 }
 
 interface RecentResponse {
